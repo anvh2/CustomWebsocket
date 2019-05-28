@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <style>
+        .list-friend :hover{
+            cursor: pointer;
+            color: #18f;
+        }
+    </style>
+</head>
+<body>
+<h2>Custom WebSocket</h2>
+<div id="chat-frame">
+    <input autofocus onkeypress="sendMessage(event)" id="textMessage" type="text" />
+    <input readonly onclick="sendMessage()" value="Send Message" type="button"/> <br/><br/>
+    <textarea id="textAreaMessage" rows="10" cols="50"></textarea>
+</div>
+</body>
+<script type="text/javascript">
+    const websocket = new WebSocket("ws://localhost:8000/websocket/");
+    const messageSend = document.getElementById("textMessage");
+    const messageWindow = document.getElementById("textAreaMessage");
+    websocket.onopen = function() {
+
+    };
+    websocket.onmessage = function(message) {
+
+    };
+    websocket.onclose = function() {
+        messageWindow.value = "Server disconnected";
+    };
+    websocket.onerror = function(message) {
+        messageWindow.value += "Error: " + message + "\n";
+    };
+
+    function sendMessage() {
+        if (typeof websocket != 'undefined' 
+        && websocket.readyState === WebSocket.OPEN 
+        && messageSend.value.length > 0) {
+            websocket.send(messageSend.value);
+            messageSend.value = "";
+        } else {
+            console.log("State of websocket is not open");
+        }
+    }
+
+    function sendMessage(event) {
+        if (event.keyCode === 13){
+            if (typeof websocket != 'undefined' 
+            && websocket.readyState === WebSocket.OPEN 
+            && messageSend.value.length > 0) {
+                websocket.send(messageSend.value);
+                messageSend.value = "";
+            } else {
+                console.log("State of websocket is not open");
+            }
+        }
+    }
+
+    $( document ).ready(function() {
+        console.log( "ready!" );
+    });
+</script>
+</html>
